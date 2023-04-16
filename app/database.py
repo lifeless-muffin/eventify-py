@@ -9,13 +9,15 @@ def db_init_app(app):
     mongo.init_app(app)
     try:
         client = MongoClient(app.config['MONGO_URI'])
+        mongo.cx = client[app.config['MONGO_DBNAME']]
         print('Connected to MongoDB!')
     except ConnectionFailure as e:
         print('Could not connect to MongoDB:', e)
 
 def add_user_if_not_present(user_info):
     # Defining the user collection
-    users_collection = mongo.db[current_app.config['MONGO_USERS_COLLECTION']]
+    print(mongo.cx['users'], "this is mongodb")
+    users_collection = mongo.cx['users']
 
     # Check if user already exists in database
     user = users_collection.find_one({'google_id': user_info['sub']})

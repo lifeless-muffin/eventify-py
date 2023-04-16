@@ -1,5 +1,6 @@
 from flask import Blueprint, redirect, url_for, session, current_app
 from authlib.integrations.flask_client import OAuth
+from app.database import add_user_if_not_present
 
 auth_bp = Blueprint('auth_bp', __name__, url_prefix='/auth')
 
@@ -17,6 +18,9 @@ def authorized():
     token = google.authorize_access_token()
     resp = google.get('userinfo')
     user_info = resp.json()
+
+    add_user_if_not_present(user_info)
+
     session['profile'] = user_info
     return redirect('/')
 
