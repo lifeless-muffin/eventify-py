@@ -1,0 +1,21 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Local development settings
+.env
+.local/
+logs/
+*.log
+
+# Packages installed by pip
+# Use `pip freeze > requirements.txt` to generate
+# and add `requirements.txt` to version control instead
+venv/
+env/
+ENV/
+
+# System generated files
+.DS_Store
+Thumbs.db
