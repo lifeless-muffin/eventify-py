@@ -1,31 +1,32 @@
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
-from flask_pymongo import PyMongo
 from flask import current_app
+from pymongo.mongo_client import MongoClient
+from config import Config
 
-mongo = PyMongo()
+# Create a new client and connect to the server
+client = MongoClient(Config.MONGO_URI)
 
-def db_init_app(app):
-    mongo.init_app(app)
+# Send a ping to confirm a successful connection
+def establish_connection():
+    global client
     try:
-        client = MongoClient(app.config['MONGO_URI'])
-        mongo.cx = client[app.config['MONGO_DBNAME']]
-        print('Connected to MongoDB!')
-    except ConnectionFailure as e:
-        print('Could not connect to MongoDB:', e)
+        client.admin.command('ping')
+        print("Pinged your deployment. You successfully connected to MongoDB!")
+    except Exception as e:
+        print(e)
+
 
 def add_user_if_not_present(user_info):
-    # Defining the user collection
-    print(mongo.cx['users'], "this is mongodb")
-    users_collection = mongo.cx['users']
+    users_collection = client[current_app.config['MONGO_DBNAME']]['users']
 
     # Check if user already exists in database
-    user = users_collection.find_one({'google_id': user_info['sub']})
+    user = users_collection.find_one({'google_id': user_info['id']})
 
     if user is None:
         # Add user to database if not already present
         user = {
-            'google_id': user_info['sub'],
+            'google_id': user_info['id'],
             'name': user_info['name'],
             'picture': user_info['picture'],
             'email': user_info['email']

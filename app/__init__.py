@@ -7,7 +7,7 @@ load_dotenv()
 from flask import Flask
 import secrets
 from config import Config
-from database import db_init_app
+from database import establish_connection
 from auth.auth import init_app
 
 def create_app():
@@ -15,7 +15,7 @@ def create_app():
     app.config.from_object(Config)
     app.config['SECRET_KEY'] = secrets.token_hex(16)
 
-    db_init_app(app)
+    establish_connection()
     init_app(app)
     
     # Importing Blueprints /
