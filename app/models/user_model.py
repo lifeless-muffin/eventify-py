@@ -19,7 +19,7 @@ class Preferences(EmbeddedDocument):
     region = StringField(choices=('us', 'in', 'jp', 'fr'), required=True)
 
 
-class User(Document):
+class Users(Document):
     id = StringField(primary_key=True)
     name = StringField(required=True)
     email = EmailField(required=True)

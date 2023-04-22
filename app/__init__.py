@@ -12,7 +12,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Database / Authentication configuration imports
-from database import establish_connection
+from database.database import init_db
 from auth.auth import init_auth, load_user, login_manager
 from flask_jwt_extended import JWTManager
 
@@ -28,7 +28,7 @@ def create_app():
     app.config.from_object(Config)
 
     # Establish Database Connection
-    establish_connection(app)
+    init_db(app)
 
     # Initalize JWT Manager for token authentication
     jwt = JWTManager(app)

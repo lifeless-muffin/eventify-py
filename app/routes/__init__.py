@@ -10,5 +10,4 @@ def home():
 @main_bp.route('/home')
 @login_required
 def protected_home():
-    return "Here's an arbitrary list of movies or tv shows based on user preferences. "
-
+    return 'Welcome'
