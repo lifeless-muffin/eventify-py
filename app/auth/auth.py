@@ -19,9 +19,9 @@ login_manager = LoginManager()
 class User(UserMixin):
     def __init__(self, user_info):
         self.id = user_info.get('id')
-        self.username = user_info.get('username')
+        self.username = user_info.get('name')
         self.email = user_info.get('email')
-        self.password = user_info.get('password')
+        self.password = user_info.get('picture')
 
     def get_id(self):
         return str(self.id)
@@ -61,9 +61,6 @@ def authorized():
     user_info = resp.json()
 
     add_user_if_not_present(user_info)
-
-    # Add the user's email to the session
-    session['email'] = user_info['email']
 
     # Create the User object and login the user
     user = User(user_info)

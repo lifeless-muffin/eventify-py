@@ -6,7 +6,7 @@ class Config:
     GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')
 
     # Atlast MongoDB configuration
-    MONGO_DBNAME = 'eventify_db'
+    MONGO_DBNAME = 'movkit'
     MONGO_USERS_COLLECTION = 'users'
     MONGO_URI = os.environ.get('MONGO_URI')
 

@@ -18,6 +18,7 @@ from flask_jwt_extended import JWTManager
 
 # Routes and blueprints
 from routes import main_bp
+from routes.user import user_bp
 
 
 def create_app():
@@ -42,5 +43,6 @@ def create_app():
     
     # Importing Blueprints /
     app.register_blueprint(main_bp)
+    app.register_blueprint(user_bp)
 
     return app
