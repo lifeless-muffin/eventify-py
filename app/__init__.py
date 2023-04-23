@@ -8,6 +8,7 @@ sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
 # Configuration requirements
 from config import Config
+from helpers.worker import make_celery
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -20,7 +21,6 @@ from flask_jwt_extended import JWTManager
 from routes import main_bp
 from routes.user import user_bp
 
-
 def create_app():
     app = Flask(__name__)
 
@@ -29,6 +29,9 @@ def create_app():
 
     # Establish Database Connection
     init_db(app)
+
+    # Create Celery instance 
+    worker = make_celery(app)
 
     # Initalize JWT Manager for token authentication
     jwt = JWTManager(app)

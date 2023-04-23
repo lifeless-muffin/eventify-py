@@ -22,3 +22,7 @@ class Config:
         'authentication_source': 'admin',
         'tls': True
     }
+
+    # Celery / redis configuration
+    CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
+    CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND')

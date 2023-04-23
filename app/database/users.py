@@ -1,4 +1,4 @@
-from app.models.user_model import Preferences, Users, Notification
+from app.models.user import Preferences, Users, Notification
 from database.database import db
 
 def add_user_if_not_present(user_info):
@@ -34,16 +34,24 @@ def get_user(user_id):
         user_dict = {
             'id': user.id,
             'name': user.name,
-            'preferences': user.preferences,
+            'preferences': user.preferences,    
             'email': user.email,
             'picture': user.picture
         }
         return user_dict
     return None
 
-def update_user(user_id, updates):
+
+def update_user_preferences(user_id, preferences_object):
+
     user = Users.objects.get(id=user_id)
-    for key, value in updates.items():
-        setattr(user, key, value)
+
+    # Create a new user object with the required fields including preferences 
+    noti_short = preferences_object['notification']
+    
+    notification = Notification(type=noti_short['type'], frequency=noti_short['frequency'], time_of_notification=noti_short['time_of_notification'])
+    preferences = Preferences(categories=preferences_object['categories'], notification=notification, language=preferences_object['language'], region=preferences_object['region'])
+
+    setattr(user, 'preferences', preferences)
     user.save()
     return user

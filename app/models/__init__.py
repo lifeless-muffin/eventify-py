@@ -1,5 +1,5 @@
-from . import user_model
+from . import user
 
 collections = {
-    "users_collection": user_model.Users
+    "users_collection": user.Users
 }

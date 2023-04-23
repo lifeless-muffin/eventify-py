@@ -1,6 +1,6 @@
-from flask import Blueprint, redirect, url_for, request, session, current_app
+from flask import Blueprint, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.database.users import update_user
+from app.database.users import update_user_preferences
 
 # Define Blueprint for User route
 user_bp = Blueprint('user_bp', __name__, url_prefix='/user')
@@ -18,10 +18,11 @@ def update_user_preferences():
 
     # Find and update user preferences in the DB
     if (updated_preferences):
+        print(updated_preferences['notification'])
         # Update user preferences
-        user = update_user(user_id, {'preferences': updated_preferences})
+        user = update_user_preferences(user_id, updated_preferences)
 
     else:
-        return {'status': 'failed', 'message': 'Empty user preferences', "data": user}, 400
+        return {'status': 'failed', 'message': 'Empty user preferences'}, 400
 
-    return {'status': 'success', 'message': 'User preferences updated'}, 200
+    return {'status': 'success', 'message': 'User preferences updated', "data": user}, 200
