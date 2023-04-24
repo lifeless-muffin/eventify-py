@@ -1,6 +1,12 @@
 import os
+import logging
 
 class Config:
+    # Flaks configurations
+    LOG_LEVEL = logging.DEBUG
+    LOG_FILE = 'logs/app.log'
+    FLASK_ENV = 'development'
+
     # Google cloud configuration
     GOOGLE_CLIENT_ID = os.environ.get('GOOGLE_CLIENT_ID')
     GOOGLE_CLIENT_SECRET = os.environ.get('GOOGLE_CLIENT_SECRET')

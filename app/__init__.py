@@ -23,9 +23,10 @@ from routes.user import user_bp
 
 def create_app():
     app = Flask(__name__)
-
+    
     # App configurations
     app.config.from_object(Config)
+    app.logger.debug('Creating app...')
 
     # Establish Database Connection
     init_db(app)

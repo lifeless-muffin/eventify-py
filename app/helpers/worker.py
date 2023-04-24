@@ -2,13 +2,14 @@ from celery import Celery
 from datetime import datetime, timedelta
 from celery.schedules import crontab
 import redis
+from flask import current_app
 
 redis_client = redis.Redis(host='localhost', port=6379)
 
 def make_celery(app):
     celery = Celery(app.import_name, broker=app.config['CELERY_BROKER_URL'], backend=app.config['CELERY_RESULT_BACKEND'])
     celery.conf.update(app.config)
-
+    
     class ContextTask(celery.Task):
         def __call__(self, *args, **kwargs):
             with app.app_context():
@@ -56,14 +57,18 @@ def process_user_list():
     """
     Process the user list to determine if any users need to be notified.
     """
-    user_list = get_user_list()
-    for user in user_list:
-        if is_notification_time(user['next_notification_time']):
-            send_notification(user['id'])
-            # Update the next_notification_time for the user.
-            user['next_notification_time'] = datetime.now() + timedelta(days=1)
-    # Update the user list in the cache.
-    set_user_list(user_list)
+    # user_list = get_user_list()
+    # for user in user_list:
+    #     if is_notification_time(user['next_notification_time']):
+    #         send_notification(user['id'])
+    #         # Update the next_notification_time for the user.
+    #         user['next_notification_time'] = datetime.now() + timedelta(days=1)
+    # # Update the user list in the cache.
+    # set_user_list(user_list)
+
+    print('is this being run?')
+    redis_client.rpush('users_list', 'some list of users')
+    print ('Process User List')
 
 # Create the Celery instance.
 celery = Celery()
@@ -81,4 +86,5 @@ celery.conf.beat_schedule = {
 # Create the task to process the user list.
 @celery.task(name='process_user_list')
 def process_user_list_task():
+    current_app.logger.debug('Process user list...')
     process_user_list()
