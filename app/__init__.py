@@ -1,16 +1,13 @@
 # Import necessary modules
 import os
 import sys
+import json
+from redis import Redis
 from flask import Flask
 
-# Adds current directory to system path.
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
-
 # Configuration requirements
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 from config import Config
-from helpers.worker import make_celery
-from dotenv import load_dotenv
-load_dotenv()
 
 # Database / Authentication configuration imports
 from database.database import init_db
@@ -26,13 +23,14 @@ def create_app():
     
     # App configurations
     app.config.from_object(Config)
-    app.logger.debug('Creating app...')
-
+    
     # Establish Database Connection
     init_db(app)
 
-    # Create Celery instance 
-    worker = make_celery(app)
+    # Redis client initalization / Cache
+    redis_client = Redis(host='localhost', port=6379, db=0)
+
+    redis_client.set('users_to_notify', json.dumps([{'next_notification_time': '2023-04-23 23:30:00', 'user_id': '01'}]))
 
     # Initalize JWT Manager for token authentication
     jwt = JWTManager(app)
