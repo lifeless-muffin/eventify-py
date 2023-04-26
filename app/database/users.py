@@ -1,5 +1,17 @@
 from app.models.user import Preferences, Users, Notification
-from database.database import db
+from utilities.redis import redis_users_list_cache
+from datetime import datetime
+
+def generate_notification_time():
+
+    # Time of notification taken from the user
+    current_date = datetime.now().date() # Returns year:month:day
+    current_date = current_date.strftime('%Y-%m-%d')
+    notification_time_str = '10:40:00' # Hour, Minute, Seconds / Timezone is IST
+    notification_time = current_date + " " + notification_time_str
+
+    return notification_time
+
 
 def add_user_if_not_present(user_info):
     # Check if user already exists in database
@@ -8,11 +20,13 @@ def add_user_if_not_present(user_info):
     if user is None:
 
         # Create a new user object with the required fields including preferences 
-        notification = Notification(type='email', frequency='all', time_of_notification='4:00')
+        notification_time = generate_notification_time()
+        notification = Notification(type='email', frequency='all', time_of_notification=notification_time)
         preferences = Preferences(categories=[], notification=notification, language='en', region='us')
 
         # Create a new User object and populate its fields with the data from user_info
         new_user = Users(
+            role='user',
             id=user_info['id'],
             name=user_info['name'],
             email=user_info['email'],
@@ -25,6 +39,7 @@ def add_user_if_not_present(user_info):
         new_user.save()
 
     # Return user / either existing or new user
+    redis_users_list_cache()
     return user
 
 
@@ -54,4 +69,31 @@ def update_user_preferences(user_id, preferences_object):
 
     setattr(user, 'preferences', preferences)
     user.save()
+
+    # here we will request for cache update
+    redis_users_list_cache()
     return user
+
+
+def update_user_notification_time(user_id, updated_user_notification_time):
+
+    user = Users.objects.get(id=user_id)
+    pref_initial = user['preferences']
+    noti_initial = user['preferences']['notification']
+
+    if not updated_user_notification_time:
+        # Check if it's correct or whehter it even exists
+        return None
+
+    # update the user_notification time / next_notification_time from preferences.notification
+    notification = Notification(type=noti_initial['type'], frequency=noti_initial['frequency'], time_of_notification=updated_user_notification_time)
+    preferences = Preferences(categories=pref_initial['categories'], notification=notification, language=pref_initial['language'], region=pref_initial['region'])
+
+    setattr(user, 'preferences', preferences)
+    user.save()
+
+    # here we will request for cache update
+    redis_users_list_cache()
+    return user
+
+

@@ -9,6 +9,7 @@ class Notification(EmbeddedDocument):
     frequency = StringField(choices=('weekly', 'daily', 'every other day', 'all'), required=True)
     time_of_notification = StringField(required=True)
 
+
 class Preferences(EmbeddedDocument):
     categories = ListField(EmbeddedDocumentField(Category))
     notification = EmbeddedDocumentField(Notification)
@@ -21,3 +22,4 @@ class Users(Document):
     email = EmailField(required=True)
     picture = StringField(required=True)
     preferences = EmbeddedDocumentField(Preferences)
+    role = StringField(required=True)

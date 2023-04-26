@@ -17,20 +17,20 @@ from flask_jwt_extended import JWTManager
 # Routes and blueprints
 from routes import main_bp
 from routes.user import user_bp
+from routes.worker import worker_bp
 
 def create_app():
     app = Flask(__name__)
     
     # App configurations
     app.config.from_object(Config)
-    
-    # Establish Database Connection
-    init_db(app)
 
     # Redis client initalization / Cache
-    redis_client = Redis(host='localhost', port=6379, db=0)
+    redis_client = Redis(host='localhost', port=6379, db=0)    
+    app.config['REDIS_CLIENT'] = redis_client
 
-    redis_client.set('users_to_notify', json.dumps([{'next_notification_time': '2023-04-23 23:30:00', 'user_id': '01'}]))
+    # Establish Database Connection
+    init_db(app)
 
     # Initalize JWT Manager for token authentication
     jwt = JWTManager(app)
@@ -46,5 +46,6 @@ def create_app():
     # Importing Blueprints /
     app.register_blueprint(main_bp)
     app.register_blueprint(user_bp)
+    app.register_blueprint(worker_bp)
 
     return app

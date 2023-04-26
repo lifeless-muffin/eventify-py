@@ -1,6 +1,6 @@
 from flask import Blueprint, request
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.database.users import update_user_preferences
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_current_user
+from app.database.users import update_user_preferences, update_user_notification_time
 
 # Define Blueprint for User route
 user_bp = Blueprint('user_bp', __name__, url_prefix='/user')
@@ -26,3 +26,4 @@ def update_user_preferences():
         return {'status': 'failed', 'message': 'Empty user preferences'}, 400
 
     return {'status': 'success', 'message': 'User preferences updated', "data": user}, 200
+

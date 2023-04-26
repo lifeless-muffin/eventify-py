@@ -18,11 +18,11 @@ login_manager = LoginManager()
 # Define the User class
 class User(UserMixin):
     def __init__(self, user_info):
+
         self.id = user_info.get('id')
         self.name = user_info.get('name')
         self.email = user_info.get('email')
         self.picture = user_info.get('picture')
-        self.preferences = user_info.get('preferences')
 
     def get_id(self):
         return str(self.id)
@@ -67,8 +67,10 @@ def authorized():
     stored_user = add_user_if_not_present(user_info)
     print('User Reigstered: ', stored_user)
 
+    get_user_as_dict = get_user(stored_user.id)
+
     # Create the User object and login the user
-    user = User(stored_user)
+    user = User(get_user_as_dict)
     login_user(user)
 
     # Generate a JWT token and return it to the client

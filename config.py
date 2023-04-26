@@ -19,6 +19,7 @@ class Config:
     # Jwt / Flask security configuration
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY')
     SECRET_KEY = os.environ.get('SECRET_KEY')
+    JWT_ACCESS_TOKEN_EXPIRES = False
 
     MONGODB_SETTINGS = {
         'host': 'mongodb+srv://mansoorroeen71:MyygOBZNHQmIewhs@cluster0.d7t5typ.mongodb.net/movkit?retryWrites=true&w=majority',
